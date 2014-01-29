@@ -5,17 +5,11 @@ TERM_WIDTH = 80
 def xls_to_excelerator_dict(filename, encoding=None):
     return parse_xls(filename, encoding)
 
-def fix_value(v):
-    if isinstance(v, unicode):
-        return v.encode('utf8').strip()
-
-    return v
-
 def print_excelerator_dict(excelerator_dict):
     for sheet_name, data in excelerator_dict:
-        print 'Sheet: %s' % fix_value(sheet_name)
+        print u'Sheet: %s' % sheet_name
         for k, v in sorted(data.items()):
-            print k, fix_value(v)
+            print k, v
 
 def sequence_with_index(seq):
     return zip(range(len(seq)), seq)
@@ -36,7 +30,7 @@ def excelerator_dict_to_rows_and_columns(excelerator_dict):
     for sheet, data in excelerator_dict:
         rows = {}
         for ((row_num, col_num), v) in data.iteritems():
-            rows.setdefault(row_num, {})[col_num] = fix_value(v)
+            rows.setdefault(row_num, {})[col_num] = v
 
         sheets[sheet] = rows
 
@@ -46,10 +40,11 @@ def rows_and_columns_to_matrix(rows_and_columns):
     new_sheets = {}
     for (sheet, d) in rows_and_columns.iteritems():
         new_sheet = []
-        row_numbers = sorted(d.keys())
+        row_numbers = xrange(max(d.keys()) + 1)
         for row_number in row_numbers:
-            row = d[row_number]
-            new_row = [row[i] for i in sorted(row.keys())]
+            row = d.get(row_number)
+            col_numbers = xrange(max(row.keys()) + 1)
+            new_row = [row.get(i) for i in col_numbers]
 
             new_sheet.append(new_row)
 
