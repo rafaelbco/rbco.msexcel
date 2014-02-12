@@ -42,8 +42,9 @@ def rows_and_columns_to_matrix(rows_and_columns):
         new_sheet = []
         row_numbers = xrange(max(d.keys()) + 1)
         for row_number in row_numbers:
-            row = d.get(row_number)
-            col_numbers = xrange(max(row.keys()) + 1)
+            row = d.get(row_number, {})
+            num_of_cols = (max(row.keys()) + 1) if row else 0
+            col_numbers = xrange(num_of_cols)
             new_row = [row.get(i) for i in col_numbers]
 
             new_sheet.append(new_row)
